@@ -38,6 +38,9 @@ except ValueError:
     deltas = default_deltas
     Ks = default_Ks
 
+st.write("当前下浮率Δ列表：", deltas)
+st.write("当前下浮系数K列表：", Ks)
+
 
 # 设置参数
 control_price = 1
@@ -120,7 +123,5 @@ if bids:  # 确保 bids 不为空
 
     # Display the plot in the Streamlit app
     plt.show()
-
-    st.pyplot(fig)
 
     st.table(df)
