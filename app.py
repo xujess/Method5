@@ -119,6 +119,6 @@ if bids:  # 确保 bids 不为空
     plt.tight_layout()
 
     # Display the plot in the Streamlit app
-    plt.show()
+    st.pyplot(fig)
 
     st.table(df)
