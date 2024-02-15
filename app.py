@@ -46,8 +46,13 @@ if bids:  # 确保 bids 不为空
       A = control_price * (1-delta)
       A = round(A,2)
 
-      B_range = [b for b in bids if C <= b < A*0.95]
+      # B_range为0.95A到C之间
+      B_range = [b for b in bids if C < b < A*0.95]
 
+      # 如果B_range为空，则使用除C外的任何有效报价作为新的B_range
+      if not B_range:
+          B_range = [b for b in in_range_bids if b != C]
+      
       for b in B_range:
         weighted_sum = 0.5*A + 0.3*b + 0.2*C
         weighted_sum = round(weighted_sum,6)
