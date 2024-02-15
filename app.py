@@ -4,6 +4,7 @@ import numpy as np
 import random
 import statistics
 import matplotlib.pyplot as plt
+from matplotlib.ticker import MaxNLocator
 
 # 自定义标价，可以录入多个，用逗号隔开
 bids = []
