@@ -17,10 +17,17 @@ if input_bids:
 
 st.write(bids)
 
-# 设置参数
-control_price = 1
 deltas = [0.12, 0.13, 0.14, 0.15, 0.16, 0.17, 0.18, 0.19, 0.2]
 Ks = [0.95,0.955,0.96,0.965,0.97,0.975,0.98]
+
+st.title("下浮率Δ")
+st.write(deltas)
+
+st.title("下浮系数K")
+st.write(Ks)
+
+# 设置参数
+control_price = 1
 
 # 计算C值
 # 计算评标价平均值 和范围下限
@@ -52,7 +59,7 @@ if bids:  # 确保 bids 不为空
       # 如果B_range为空，则使用除C外的任何有效报价作为新的B_range
       if not B_range:
           B_range = [b for b in in_range_bids if b != C]
-      
+
       for b in B_range:
         weighted_sum = 0.5*A + 0.3*b + 0.2*C
         weighted_sum = round(weighted_sum,6)
