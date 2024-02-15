@@ -35,10 +35,6 @@ except ValueError:
     deltas = default_deltas
     Ks = default_Ks
 
-st.write("当前下浮率Δ列表：", deltas)
-st.write("当前下浮系数K列表：", Ks)
-
-
 # 设置参数
 control_price = 1
 
