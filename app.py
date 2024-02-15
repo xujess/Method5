@@ -17,14 +17,27 @@ if input_bids:
 
 st.write(bids)
 
-deltas = [0.12, 0.13, 0.14, 0.15, 0.16, 0.17, 0.18, 0.19, 0.2]
-Ks = [0.95,0.955,0.96,0.965,0.97,0.975,0.98]
 
-st.title("下浮率Δ")
-st.write(deltas)
+# 设置默认的 deltas 和 Ks
+default_deltas = [0.12, 0.13, 0.14, 0.15, 0.16, 0.17, 0.18, 0.19, 0.2]
+default_Ks = [0.95, 0.955, 0.96, 0.965, 0.97, 0.975, 0.98]
 
-st.title("下浮系数K")
-st.write(Ks)
+# 用户自定义 deltas 和 Ks 输入
+input_deltas = st.text_input("录入下浮率Δ，用逗号分隔开：", value=','.join(map(str, default_deltas)))
+input_Ks = st.text_input("录入下浮系数K，用逗号分隔开：", value=','.join(map(str, default_Ks)))
+
+# 转换用户输入为浮点数列表，如果转换失败则使用默认值
+try:
+    deltas = [float(delta.strip()) for delta in input_deltas.split(",")]
+    Ks = [float(K.strip()) for K in input_Ks.split(",")]
+except ValueError:
+    st.error("下浮率Δ和下浮系数K必须是由逗号分隔的数字。")
+    deltas = default_deltas
+    Ks = default_Ks
+
+st.write("当前下浮率Δ列表：", deltas)
+st.write("当前下浮系数K列表：", Ks)
+
 
 # 设置参数
 control_price = 1
