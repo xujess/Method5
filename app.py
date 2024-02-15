@@ -35,6 +35,10 @@ except ValueError:
     deltas = default_deltas
     Ks = default_Ks
 
+st.write("当前下浮率Δ列表：", deltas)
+st.write("当前下浮系数K列表：", Ks)
+
+
 # 设置参数
 control_price = 1
 
@@ -84,5 +88,39 @@ if bids:  # 确保 bids 不为空
 
 
     st.title("评标基准价=(A×50%＋B×30%＋C×20%)×K")
+
+    # 假设df是您的DataFrame，并且它包含一个名为'benchmark'的列
+
+    # 创建一个figure和一组subplots
+    fig, (ax_box, ax_hist) = plt.subplots(1, 2, figsize=(12, 6), gridspec_kw={'width_ratios': [1, 2]})
+
+    # Boxplot on the first subplot
+    bp = ax_box.boxplot(df['benchmark'], vert=True)
+    ax_box.set_title('Benchmark Boxplot')
+
+    # 获取boxplot中的统计数据
+    stats = bp['whiskers'][0].get_ydata()[1], bp['boxes'][0].get_ydata()[1], bp['medians'][0].get_ydata()[1], bp['boxes'][0].get_ydata()[2], bp['whiskers'][1].get_ydata()[1]
+
+    # 设置boxplot的y轴刻度和标签
+    ax_box.set_yticks(stats)
+    ax_box.set_yticklabels([f"{val:.6f}" for val in stats])
+
+    # Histogram on the second subplot
+    ax_hist.hist(df['benchmark'], bins=20, orientation='horizontal', color='skyblue', edgecolor='grey')
+    ax_hist.set_title('Benchmark Histogram')
+    ax_hist.set_ylabel('Benchmark Values')
+    ax_hist.set_xlabel('Frequency')
+
+    # To align the y-axis of both the plots by the benchmark values
+    ax_hist.set_yticks(stats)
+    ax_hist.set_yticklabels([f"{val:.6f}" for val in stats])
+
+    # Tweak spacing between subplots to prevent overlap
+    plt.tight_layout()
+
+    # Display the plot in the Streamlit app
+    plt.show()
+
+    st.pyplot(fig)
 
     st.table(df)
