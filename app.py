@@ -82,10 +82,10 @@ if bids:  # 确保 bids 不为空
         for K in Ks:
           benchmark = weighted_sum * K
           benchmark = round(benchmark,6)
-          data.append([delta,A,round(0.95*A,6),C,b,weighted_sum,K,benchmark])
+          data.append([delta,A,round(0.95*A,6),lower_limit,C,b,weighted_sum,K,benchmark])
 
     df = pd.DataFrame(data, columns=[
-      'delta', 'A', '0.95A', 'C', 'B',
+      'delta', 'A', '0.95A', 'lower_limit', 'C', 'B',
       'weighted_sum', 'K', 'benchmark'])
 
 
@@ -122,5 +122,8 @@ if bids:  # 确保 bids 不为空
 
     # Display the plot in the Streamlit app
     st.pyplot(fig)
+
+    fig_html = mpld3.fig_to_html(fig)
+    components.html(fig_html, height=600)
 
     st.table(df)
