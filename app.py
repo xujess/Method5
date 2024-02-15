@@ -123,7 +123,4 @@ if bids:  # 确保 bids 不为空
     # Display the plot in the Streamlit app
     st.pyplot(fig)
 
-    fig_html = mpld3.fig_to_html(fig)
-    components.html(fig_html, height=600)
-
     st.table(df)
