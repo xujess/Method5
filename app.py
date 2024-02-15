@@ -5,8 +5,6 @@ import random
 import statistics
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MaxNLocator
-import mpld3
-import streamlit.components.v1 as components
 
 
 # 自定义标价，可以录入多个，用逗号隔开
@@ -122,8 +120,5 @@ if bids:  # 确保 bids 不为空
 
     # Display the plot in the Streamlit app
     st.pyplot(fig)
-
-    fig_html = mpld3.fig_to_html(fig)
-    components.html(fig_html, height=600)
 
     st.table(df)
