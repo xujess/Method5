@@ -85,7 +85,16 @@ if bids:  # 确保 bids 不为空
     df = pd.DataFrame(data, columns=[
       'delta', 'A', '0.95A', 'lower_limit', 'C', 'B',
       'weighted_sum', 'K', 'benchmark'])
-
+    
+    df['delta'] = df['delta'].round(2)
+    df['A'] = df['A'].round(2)
+    df['0.95A'] = df['0.95A'].round(4)
+    df['lower_limit'] = df['lower_limit'].round(4)
+    df['C'] = df['C'].round(3)
+    df['B'] = df['B'].round(3)
+    df['weighted_sum'] = df['weighted_sum'].round(4)
+    df['K'] = df['K'].round(3)
+    df['benchmark'] = df['benchmark'].round(6)    
 
     st.title("评标基准价=(A×50%＋B×30%＋C×20%)×K")
 
