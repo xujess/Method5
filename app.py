@@ -86,8 +86,6 @@ if bids:  # 确保 bids 不为空
       'delta', 'A', '0.95A', 'lower_limit', 'C', 'B',
       'weighted_sum', 'K', 'benchmark'])
     
-    df = df.style.format({'benchmark': '{:.6f}'})
-
     st.title("评标基准价=(A×50%＋B×30%＋C×20%)×K")
 
     # 假设df是您的DataFrame，并且它包含一个名为'benchmark'的列
