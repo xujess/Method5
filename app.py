@@ -5,6 +5,7 @@ import random
 import statistics
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MaxNLocator
+import plotly.express as px
 
 
 # 自定义标价，可以录入多个，用逗号隔开
@@ -80,44 +81,62 @@ if bids:  # 确保 bids 不为空
         for K in Ks:
           benchmark = weighted_sum * K
           benchmark = round(benchmark,6)
-          data.append([delta,A,round(0.95*A,6),lower_limit,C,b,weighted_sum,K,benchmark])
+          data.append([delta,A,round(0.95*A,6),C,b,weighted_sum,K,benchmark])
 
     df = pd.DataFrame(data, columns=[
-      'delta', 'A', '0.95A', 'lower_limit', 'C', 'B',
+      'delta', 'A', '0.95A', 'C', 'B',
       'weighted_sum', 'K', 'benchmark'])
-    
+
+
     st.title("评标基准价=(A×50%＋B×30%＋C×20%)×K")
 
-    # 假设df是您的DataFrame，并且它包含一个名为'benchmark'的列
 
-    # 创建一个figure和一组subplots
-    fig, (ax_box, ax_hist) = plt.subplots(1, 2, figsize=(12, 6), gridspec_kw={'width_ratios': [1, 2]})
+    # 计算箱线图的统计数据
+    stats = df['benchmark'].describe(percentiles=[.25, .5, .75])
+    min_val = stats['min']
+    q1_val = stats['25%']
+    median_val = stats['50%']
+    q3_val = stats['75%']
+    max_val = stats['max']
 
-    # Boxplot on the first subplot
-    bp = ax_box.boxplot(df['benchmark'], vert=True)
-    ax_box.set_title('Benchmark Boxplot')
+    # 设置刻度值和刻度标签，保留小数点六位
+    tickvals = [min_val, q1_val, median_val, q3_val, max_val]
+    ticktext = [f"{min_val:.6f}", f"{q1_val:.6f}", f"{median_val:.6f}", f"{q3_val:.6f}", f"{max_val:.6f}"]
 
-    # 获取boxplot中的统计数据
-    stats = bp['whiskers'][0].get_ydata()[1], bp['boxes'][0].get_ydata()[1], bp['medians'][0].get_ydata()[1], bp['boxes'][0].get_ydata()[2], bp['whiskers'][1].get_ydata()[1]
+    # 在图表上方添加滑块以调整直方图的bin数量
+    bins = st.slider('调整直方图的bin数量:', min_value=1, max_value=len(df['benchmark']), value=30)
 
-    # 设置boxplot的y轴刻度和标签
-    ax_box.set_yticks(stats)
-    ax_box.set_yticklabels([f"{val:.6f}" for val in stats])
+    # 创建箱线图
+    fig_box = px.box(df, y='benchmark', points="all")
+    fig_box.update_traces(marker=dict(size=3))  # 调整散点大小
+    fig_box.update_layout(
+        autosize=True,
+        yaxis=dict(
+            tickvals=tickvals,
+            ticktext=ticktext
+        )
+    )
+    fig_box.update_yaxes(title='Benchmark')
 
-    # Histogram on the second subplot
-    ax_hist.hist(df['benchmark'], bins=20, orientation='horizontal', color='skyblue', edgecolor='grey')
-    ax_hist.set_title('Benchmark Histogram')
-    ax_hist.set_ylabel('Benchmark Values')
-    ax_hist.set_xlabel('Frequency')
 
-    # To align the y-axis of both the plots by the benchmark values
-    ax_hist.set_yticks(stats)
-    ax_hist.set_yticklabels([f"{val:.6f}" for val in stats])
+    # 创建水平直方图并根据滑块的值调整bin的数量
+    fig_hist = px.histogram(df, y='benchmark', orientation='h', nbins=bins)
+    fig_hist.update_layout(
+        bargap=0.1,
+        yaxis=dict(
+            tickvals=tickvals,
+            ticktext=ticktext
+        )
+    )
+    fig_hist.update_xaxes(title='Count')
 
-    # Tweak spacing between subplots to prevent overlap
-    plt.tight_layout()
+    # 用 Streamlit 的 columns 创建两列并排显示图表
+    col1, col2 = st.columns(2)
 
-    # Display the plot in the Streamlit app
-    st.pyplot(fig)
+    with col1:
+        st.plotly_chart(fig_box, use_container_width=True)
+
+    with col2:
+        st.plotly_chart(fig_hist, use_container_width=True)
 
     st.table(df)
