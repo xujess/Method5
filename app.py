@@ -26,7 +26,7 @@ if bids:
         '序号': range(1, len(bids) + 1),
         '投标报价': bids
     })
-    st.table(bids_df.set_index('序号'))
+    st.dataframe(bids_df.set_index('序号'))
   
 st.header("2. 调整参数")
 
