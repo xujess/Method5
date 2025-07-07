@@ -18,8 +18,8 @@ input_bids = st.text_input("用逗号分隔开，可录入多个")
 if input_bids:
   bids += input_bids.split(",")
   bids = [float(bid) for bid in bids]
+  bids.sort(reverse=True)
 
-# MODIFIED: Replaced st.write(bids) with a formatted table
 if bids:
     # Create a DataFrame for display with a 1-based index
     bids_df = pd.DataFrame({
