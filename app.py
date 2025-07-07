@@ -116,7 +116,7 @@ if bids:  # 确保 bids 不为空
         for K in Ks:
           benchmark = weighted_sum * K
           benchmark = round(benchmark,6)
-          data.append([delta,A,round(0.95*A,6),round(bid_mean,6),lower_limit,C,b,weighted_sum,K,benchmark])
+          data.append([delta,A,round(0.95*A,6),round(bid_mean,6),round(lower_limit,6),C,b,weighted_sum,K,benchmark])
 
     df = pd.DataFrame(data, columns=[
       '下浮率Δ', 'A', '0.95*A', '报价平均值','规定范围内', 'C', 'B',
