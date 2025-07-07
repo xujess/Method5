@@ -130,7 +130,7 @@ if bids:  # 确保 bids 不为空
     st.title(f"评标基准价=(A×{wA_percent}%＋B×{wB_percent}%＋C×{wC_percent}%)×K")
 
     # MODIFIED: Added this markdown block to explain the variables.
-    st.markdown("""
+    st.markdown(f"""
     <small>其中:</small>
     <ul>
       <li><b>A</b> = 招标控制价 × (1 - 下浮率Δ)</li>
