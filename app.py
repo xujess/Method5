@@ -11,8 +11,8 @@ import plotly.express as px
 # 自定义标价，可以录入多个，用逗号隔开
 bids = []
 
-st.title("方法五自定义标价")
-
+st.title("方法五:评标基准价测算")
+st.header("1. 输入所有有效投标报价")
 input_bids = st.text_input("用逗号分隔开，可录入多个")
 
 if input_bids:
@@ -20,6 +20,7 @@ if input_bids:
   bids = [float(bid) for bid in bids]
 
 st.write(bids)
+st.header("2. 调整参数")
 
 
 # 设置默认的 deltas 和 Ks
@@ -84,8 +85,8 @@ if bids:  # 确保 bids 不为空
           data.append([delta,A,round(0.95*A,6),C,b,weighted_sum,K,benchmark])
 
     df = pd.DataFrame(data, columns=[
-      'delta', 'A', '0.95A', 'C', 'B',
-      'weighted_sum', 'K', 'benchmark'])
+      '下浮率Δ', 'A', '0.95*A', 'C', 'B',
+      '加权平均值', '系数K', '评标基准价'])
 
 
     st.title("评标基准价=(A×50%＋B×30%＋C×20%)×K")
@@ -104,10 +105,10 @@ if bids:  # 确保 bids 不为空
     ticktext = [f"{min_val:.6f}", f"{q1_val:.6f}", f"{median_val:.6f}", f"{q3_val:.6f}", f"{max_val:.6f}"]
 
     # 在图表上方添加滑块以调整直方图的bin数量
-    bins = st.slider('调整直方图的bin数量:', min_value=1, max_value=len(df['benchmark']), value=30)
+    bins = st.slider('调整直方图的bin数量:', min_value=1, max_value=len(df['评标基准价']), value=30)
 
     # 创建箱线图
-    fig_box = px.box(df, y='benchmark', points="all")
+    fig_box = px.box(df, y='评标基准价', points="all")
     fig_box.update_traces(marker=dict(size=3))  # 调整散点大小
     fig_box.update_layout(
         autosize=True,
@@ -116,11 +117,11 @@ if bids:  # 确保 bids 不为空
             ticktext=ticktext
         )
     )
-    fig_box.update_yaxes(title='Benchmark')
+    fig_box.update_yaxes(title='评标基准价')
 
 
     # 创建水平直方图并根据滑块的值调整bin的数量
-    fig_hist = px.histogram(df, y='benchmark', orientation='h', nbins=bins)
+    fig_hist = px.histogram(df, y='评标基准价', orientation='h', nbins=bins)
     fig_hist.update_layout(
         bargap=0.1,
         yaxis=dict(
@@ -128,7 +129,7 @@ if bids:  # 确保 bids 不为空
             ticktext=ticktext
         )
     )
-    fig_hist.update_xaxes(title='Count')
+    fig_hist.update_xaxes(title='数量')
 
     # 用 Streamlit 的 columns 创建两列并排显示图表
     col1, col2 = st.columns(2)
@@ -139,4 +140,6 @@ if bids:  # 确保 bids 不为空
     with col2:
         st.plotly_chart(fig_hist, use_container_width=True)
 
+    
+    st.subheader("详细数据表")
     st.table(df)
