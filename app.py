@@ -40,6 +40,7 @@ except ValueError:
     deltas = default_deltas
     Ks = default_Ks
 
+
 # NEW: Add a subheader for weight adjustments
 st.subheader("调整ABC权重")
 
@@ -104,7 +105,8 @@ if bids:  # 确保 bids 不为空
           B_range = [b for b in in_range_bids if b != C]
 
       for b in B_range:
-        weighted_sum = 0.5*A + 0.3*b + 0.2*C
+        # NEW: Use the dynamic weights from the number inputs in the calculation
+        weighted_sum = wA*A + wB*b + wC*C
         weighted_sum = round(weighted_sum,6)
 
         for K in Ks:
@@ -117,57 +119,62 @@ if bids:  # 确保 bids 不为空
       '加权平均值', '系数K', '评标基准价'])
 
 
-    st.title("评标基准价=(A×50%＋B×30%＋C×20%)×K")
+    # NEW: The title is now an f-string to dynamically show the current weights.
+    st.title(f"评标基准价=(A×{wA_percent}%＋B×{wB_percent}%＋C×{wC_percent:.1f}%)×K")
 
 
     # 计算箱线图的统计数据
-    stats = df['评标基准价'].describe(percentiles=[.25, .5, .75])
-    min_val = stats['min']
-    q1_val = stats['25%']
-    median_val = stats['50%']
-    q3_val = stats['75%']
-    max_val = stats['max']
+    # Check if DataFrame is empty before proceeding
+    if not df.empty:
+        stats = df['评标基准价'].describe(percentiles=[.25, .5, .75])
+        min_val = stats['min']
+        q1_val = stats['25%']
+        median_val = stats['50%']
+        q3_val = stats['75%']
+        max_val = stats['max']
 
-    # 设置刻度值和刻度标签，保留小数点六位
-    tickvals = [min_val, q1_val, median_val, q3_val, max_val]
-    ticktext = [f"{min_val:.6f}", f"{q1_val:.6f}", f"{median_val:.6f}", f"{q3_val:.6f}", f"{max_val:.6f}"]
+        # 设置刻度值和刻度标签，保留小数点六位
+        tickvals = [min_val, q1_val, median_val, q3_val, max_val]
+        ticktext = [f"{min_val:.6f}", f"{q1_val:.6f}", f"{median_val:.6f}", f"{q3_val:.6f}", f"{max_val:.6f}"]
 
-    # 在图表上方添加滑块以调整直方图的bin数量
-    bins = st.slider('调整直方图的bin数量:', min_value=1, max_value=len(df['评标基准价']), value=30)
+        # 在图表上方添加滑块以调整直方图的bin数量
+        bins = st.slider('调整直方图的bin数量:', min_value=1, max_value=len(df['评标基准价']), value=30)
 
-    # 创建箱线图
-    fig_box = px.box(df, y='评标基准价', points="all")
-    fig_box.update_traces(marker=dict(size=3))  # 调整散点大小
-    fig_box.update_layout(
-        autosize=True,
-        yaxis=dict(
-            tickvals=tickvals,
-            ticktext=ticktext
+        # 创建箱线图
+        fig_box = px.box(df, y='评标基准价', points="all")
+        fig_box.update_traces(marker=dict(size=3))  # 调整散点大小
+        fig_box.update_layout(
+            autosize=True,
+            yaxis=dict(
+                tickvals=tickvals,
+                ticktext=ticktext
+            )
         )
-    )
-    fig_box.update_yaxes(title='评标基准价')
+        fig_box.update_yaxes(title='评标基准价')
 
 
-    # 创建水平直方图并根据滑块的值调整bin的数量
-    fig_hist = px.histogram(df, y='评标基准价', orientation='h', nbins=bins)
-    fig_hist.update_layout(
-        bargap=0.1,
-        yaxis=dict(
-            tickvals=tickvals,
-            ticktext=ticktext
+        # 创建水平直方图并根据滑块的值调整bin的数量
+        fig_hist = px.histogram(df, y='评标基准价', orientation='h', nbins=bins)
+        fig_hist.update_layout(
+            bargap=0.1,
+            yaxis=dict(
+                tickvals=tickvals,
+                ticktext=ticktext
+            )
         )
-    )
-    fig_hist.update_xaxes(title='数量')
+        fig_hist.update_xaxes(title='数量')
 
-    # 用 Streamlit 的 columns 创建两列并排显示图表
-    col1, col2 = st.columns(2)
+        # 用 Streamlit 的 columns 创建两列并排显示图表
+        chart_col1, chart_col2 = st.columns(2)
 
-    with col1:
-        st.plotly_chart(fig_box, use_container_width=True)
+        with chart_col1:
+            st.plotly_chart(fig_box, use_container_width=True)
 
-    with col2:
-        st.plotly_chart(fig_hist, use_container_width=True)
+        with chart_col2:
+            st.plotly_chart(fig_hist, use_container_width=True)
 
-    
-    st.subheader("详细数据表")
-    st.table(df)
+        
+        st.subheader("详细数据表")
+        st.dataframe(df) # Using st.dataframe for better interactivity
+    else:
+        st.warning("没有生成有效数据。请检查输入的投标报价和参数设置。")
