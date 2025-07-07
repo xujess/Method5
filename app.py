@@ -26,7 +26,7 @@ if bids:
         '序号': range(1, len(bids) + 1),
         '投标报价': bids
     })
-    st.table(bids_df)
+    st.table(bids_df.set_index('序号'))
   
 st.header("2. 调整参数")
 
@@ -48,8 +48,6 @@ except ValueError:
     deltas = default_deltas
     Ks = default_Ks
 
-
-# MODIFIED: Removed the "调整ABC权重" subheader
 # Use columns to place the number inputs side-by-side
 col1, col2, col3 = st.columns(3)
 
