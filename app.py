@@ -40,6 +40,34 @@ except ValueError:
     deltas = default_deltas
     Ks = default_Ks
 
+# NEW: Add a subheader for weight adjustments
+st.subheader("调整ABC权重")
+
+# NEW: Use columns to place the number inputs side-by-side
+col1, col2, col3 = st.columns(3)
+
+with col1:
+    wA_percent = st.number_input("A的权重 (%)", min_value=0.0, max_value=100.0, value=50.0, step=1.0, format="%.1f")
+
+with col2:
+    wB_percent = st.number_input("B的权重 (%)", min_value=0.0, max_value=100.0, value=30.0, step=1.0, format="%.1f")
+
+# NEW: Validate that the sum of A and B is not more than 100
+if wA_percent + wB_percent > 100.0:
+    st.error("错误：A和B的权重之和不能超过100%。")
+    st.stop() # Stop the app from running further until the error is fixed.
+
+# NEW: Calculate C's weight automatically and display it
+wC_percent = 100.0 - wA_percent - wB_percent
+with col3:
+    st.metric(label="C的权重 (%) (自动计算)", value=f"{wC_percent:.1f}%")
+
+
+# NEW: Convert percentage weights to decimal form for calculations
+wA = wA_percent / 100.0
+wB = wB_percent / 100.0
+wC = wC_percent / 100.0
+
 
 # 设置参数
 control_price = 1
