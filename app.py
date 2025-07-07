@@ -11,7 +11,7 @@ import plotly.express as px
 # 自定义标价，可以录入多个，用逗号隔开
 bids = []
 
-st.title("方法五:评标基准价测算")
+st.title("方法五:ABC合成法")
 st.header("1. 输入所有有效投标报价")
 input_bids = st.text_input("用逗号分隔开，可录入多个")
 
@@ -19,7 +19,15 @@ if input_bids:
   bids += input_bids.split(",")
   bids = [float(bid) for bid in bids]
 
-st.write(bids)
+# MODIFIED: Replaced st.write(bids) with a formatted table
+if bids:
+    # Create a DataFrame for display with a 1-based index
+    bids_df = pd.DataFrame({
+        '序号': range(1, len(bids) + 1),
+        '投标报价': bids
+    })
+    st.table(bids_df)
+  
 st.header("2. 调整参数")
 
 
@@ -126,7 +134,7 @@ if bids:  # 确保 bids 不为空
     <ul>
       <li><b>A</b> = 招标控制价 × (1 - 下浮率Δ)</li>
       <li><b>B</b> = 在 C 与 0.95×A 之间的任一有效投标报价(若该范围无报价，则B为除C外的任一有效报价)</li>
-      <li><b>C</b> = 所有有效投标报价中的最低价</li>
+      <li><b>C</b> = 在规定范围内的最低评标价； 规定范围内:评标价算术平均值×70%与招标控制价×30%之和与其下浮25%以内的所有评标价</li>
     </ul>
     """, unsafe_allow_html=True)
 
@@ -180,6 +188,7 @@ if bids:  # 确保 bids 不为空
 
         
         st.subheader("详细数据表")
+        df.index = pd.RangeIndex(start=1, stop=len(df) + 1, name='序号')
         st.dataframe(df) # Using st.dataframe for better interactivity
     else:
         st.warning("没有生成有效数据。请检查输入的投标报价和参数设置。")
