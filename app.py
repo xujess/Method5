@@ -188,6 +188,7 @@ if bids:  # 确保 bids 不为空
 
         
         st.subheader("详细数据表")
+      
         df.index = pd.RangeIndex(start=1, stop=len(df) + 1, name='序号')
         st.dataframe(df) # Using st.dataframe for better interactivity
     else:
