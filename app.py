@@ -180,6 +180,6 @@ if bids:  # 确保 bids 不为空
 
         
         st.subheader("详细数据表")
-        st.dataframe(df) # Using st.dataframe for better interactivity
+        st.table(df) # Using st.dataframe for better interactivity
     else:
         st.warning("没有生成有效数据。请检查输入的投标报价和参数设置。")
