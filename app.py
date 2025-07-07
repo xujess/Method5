@@ -120,7 +120,17 @@ if bids:  # 确保 bids 不为空
     # The title now displays integer percentages
     st.title(f"评标基准价=(A×{wA_percent}%＋B×{wB_percent}%＋C×{wC_percent}%)×K")
 
+    # MODIFIED: Added this markdown block to explain the variables.
+    st.markdown("""
+    <small><i>其中:</i></small>
+    <ul>
+      <li><b>A</b> = 招标控制价 × (1 - 下浮率Δ)</li>
+      <li><b>B</b> = 在 C 与 0.95×A 之间的任一有效投标报价。(若该范围无报价，则B为除C外的任一有效报价)</li>
+      <li><b>C</b> = 所有有效投标报价中的最低价。</li>
+    </ul>
+    """, unsafe_allow_html=True)
 
+    
     # 计算箱线图的统计数据
     # Check if DataFrame is empty before proceeding
     if not df.empty:
@@ -170,7 +180,6 @@ if bids:  # 确保 bids 不为空
 
         
         st.subheader("详细数据表")
-        # MODIFIED: Use st.table to display the full, non-scrollable table.
-        st.table(df)
+        st.dataframe(df) # Using st.dataframe for better interactivity
     else:
         st.warning("没有生成有效数据。请检查输入的投标报价和参数设置。")
