@@ -93,7 +93,7 @@ if bids:  # 确保 bids 不为空
 
 
     # 计算箱线图的统计数据
-    stats = df['benchmark'].describe(percentiles=[.25, .5, .75])
+    stats = df['评标基准价'].describe(percentiles=[.25, .5, .75])
     min_val = stats['min']
     q1_val = stats['25%']
     median_val = stats['50%']
@@ -105,7 +105,7 @@ if bids:  # 确保 bids 不为空
     ticktext = [f"{min_val:.6f}", f"{q1_val:.6f}", f"{median_val:.6f}", f"{q3_val:.6f}", f"{max_val:.6f}"]
 
     # 在图表上方添加滑块以调整直方图的bin数量
-    bins = st.slider('调整直方图的bin数量:', min_value=1, max_value=len(df['benchmark']), value=30)
+    bins = st.slider('调整直方图的bin数量:', min_value=1, max_value=len(df['评标基准价']), value=30)
 
     # 创建箱线图
     fig_box = px.box(df, y='评标基准价', points="all")
