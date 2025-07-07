@@ -116,10 +116,10 @@ if bids:  # 确保 bids 不为空
         for K in Ks:
           benchmark = weighted_sum * K
           benchmark = round(benchmark,6)
-          data.append([delta,A,round(0.95*A,6),C,b,weighted_sum,K,benchmark])
+          data.append([delta,A,round(0.95*A,6),round(bid_mean,6),lower_limit,C,b,weighted_sum,K,benchmark])
 
     df = pd.DataFrame(data, columns=[
-      '下浮率Δ', 'A', '0.95*A', 'C', 'B',
+      '下浮率Δ', 'A', '0.95*A', '报价平均值','规定范围内', 'C', 'B',
       '加权平均值', '系数K', '评标基准价'])
 
 
@@ -131,7 +131,7 @@ if bids:  # 确保 bids 不为空
     <small>其中:</small>
     <ul>
       <li><b>A</b> = 招标控制价 × (1 - 下浮率Δ)</li>
-      <li><b>C</b> = 在规定范围内的最低评标价 (规定范围内:评标价算术平均值×70%与招标控制价×30%之和与其下浮25%以内的所有评标价)</li>
+      <li><b>C</b> = 规定范围内的最低评标价 (规定范围内:评标价算术平均值×70%与招标控制价×30%之和下浮25%以内的所有评标价)</li>
       <li><b>B</b> = 在 C 与 0.95×A 之间的任一有效投标报价(若该范围无报价，则B为除C外的任一有效报价)</li>
     </ul>
     """, unsafe_allow_html=True)
