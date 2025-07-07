@@ -143,7 +143,7 @@ if bids:  # 确保 bids 不为空
         ticktext = [f"{min_val:.6f}", f"{q1_val:.6f}", f"{median_val:.6f}", f"{q3_val:.6f}", f"{max_val:.6f}"]
 
         # 创建箱线图
-        fig_box = px.box(df, y='评标基usion价', points="all")
+        fig_box = px.box(df, y='评标基准价', points="all")
         fig_box.update_traces(marker=dict(size=3))
         fig_box.update_layout(
             autosize=True,
