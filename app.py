@@ -49,7 +49,7 @@ except ValueError:
     Ks = default_Ks
 
 # Use columns to place the number inputs side-by-side
-col1, col2, col3 = st.columns(3)
+col1, col2, col3, col4 = st.columns(4)
 
 with col1:
     wA_percent = st.number_input("A的权重 (%)", min_value=0, max_value=100, value=50, step=1)
@@ -67,11 +67,14 @@ wC_percent = 100 - wA_percent - wB_percent
 with col3:
     st.number_input("C的权重 (%) (自动计算)", value=wC_percent, disabled=True)
 
-
+with col4:
+    lower_rate_percent = st.number_input("规定范围下浮率 (%)", min_value=0, max_value=100, value=25, step=1)
+  
 # Convert percentage weights to decimal form for calculations
 wA = wA_percent / 100.0
 wB = wB_percent / 100.0
 wC = wC_percent / 100.0
+lower_rate_decimal = lower_rate_percent / 100.0
 
 
 # 设置参数
@@ -82,7 +85,7 @@ control_price = 1
 
 if bids:  # 确保 bids 不为空
   bid_mean = statistics.mean(bids)
-  lower_limit = (bid_mean * 0.7 + control_price * 0.3) * 0.75
+  lower_limit = (bid_mean * 0.7 + control_price * 0.3) * (1 - lower_rate_decimal)
 
   # 过滤bids,得到在范围内的bids
   in_range_bids = [b for b in bids if b >= lower_limit]
@@ -131,7 +134,7 @@ if bids:  # 确保 bids 不为空
     <small>其中:</small>
     <ul>
       <li><b>A</b> = 招标控制价 × (1 - 下浮率Δ)</li>
-      <li><b>C</b> = 规定范围内的最低评标价 (规定范围内:评标价算术平均值×70%与招标控制价×30%之和下浮25%以内的所有评标价)</li>
+      <li><b>C</b> = 规定范围内的最低评标价 (规定范围内:评标价算术平均值×70%与招标控制价×30%之和下浮{lower_rate_percent}%以内的所有评标价)</li>
       <li><b>B</b> = 在 C 与 0.95×A 之间的任一有效投标报价(若该范围无报价，则B为除C外的任一有效报价)</li>
     </ul>
     """, unsafe_allow_html=True)
